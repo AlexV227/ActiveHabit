@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.activehabit.app.validators.getEmailValidationError
+import androidx.lifecycle.lifecycleScope
+import com.activehabit.app.network.RetrofitClient
+import kotlinx.coroutines.launch
 import com.activehabit.app.databinding.FragmentLoginBinding
 import android.util.Patterns
 import android.widget.Toast
@@ -58,7 +61,29 @@ class LoginFragment : Fragment() {
             if (passwordError != null) {
                 binding.etPassword.error = passwordError
                 isValid = false
-            } /* новый пароль*/
+            }
+            if (!isValid) {
+                return@setOnClickListener
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val healthResponse = RetrofitClient.apiService.getHealth()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Сервер: ${healthResponse.status}, база: ${healthResponse.database}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } catch (error: Exception) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Не удалось подключиться к серверу",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        /* новый пароль*/
 /*
            if (password.isBlank()) {
                 binding.etPassword.error = "Введите пароль"
@@ -76,13 +101,12 @@ class LoginFragment : Fragment() {
             } старый пароль
 */
 
+            }
 
-
+            binding.tvRegister.setOnClickListener {
+                findNavController().navigate(R.id.action_login_to_register)
+            }
         }
-        binding.tvRegister.setOnClickListener {
-            findNavController().navigate(R.id.action_login_to_register)
-        }
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
