@@ -15,10 +15,8 @@ import android.util.Patterns
 import android.widget.Toast
 import com.activehabit.app.validators.getPasswordValidationError
 class LoginFragment : Fragment() {
-
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +30,10 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogin.setOnClickListener {
+
+
+
+
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString()
 
@@ -72,7 +74,7 @@ class LoginFragment : Fragment() {
 
                     Toast.makeText(
                         requireContext(),
-                        "Сервер: ${healthResponse.status}, база: ${healthResponse.database}",
+                        "Server: ${healthResponse.status}, db: ${healthResponse.database}",
                         Toast.LENGTH_LONG
                     ).show()
                 } catch (error: Exception) {
