@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.activehabit.app.validators.getEmailValidationError
 import androidx.lifecycle.lifecycleScope
 import com.activehabit.app.network.RetrofitClient
+import com.activehabit.app.network.RequestLogin
 import kotlinx.coroutines.launch
 import com.activehabit.app.databinding.FragmentLoginBinding
 import android.util.Patterns
@@ -70,17 +71,22 @@ class LoginFragment : Fragment() {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val healthResponse = RetrofitClient.apiService.getHealth()
+                    val requestLogin = RequestLogin(
+                        email = email,
+                        password = password
+                    )
+
+                    val loginResponse = RetrofitClient.apiService.login(requestLogin)
 
                     Toast.makeText(
                         requireContext(),
-                        "Server: ${healthResponse.status}, db: ${healthResponse.database}",
+                        loginResponse.message,
                         Toast.LENGTH_LONG
                     ).show()
                 } catch (error: Exception) {
                     Toast.makeText(
                         requireContext(),
-                        "Не удалось подключиться к серверу",
+                        "Ошибка: ${error.message}",
                         Toast.LENGTH_LONG
                     ).show()
                 }
