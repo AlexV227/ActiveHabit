@@ -4,22 +4,89 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
+    <!-- Экран входа -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.activehabit.app.ui.auth.LoginFragment"
         android:label="Вход">
+
         <action
             android:id="@+id/action_login_to_register"
-            app:destination="@id/registerFragment"/>
+            app:destination="@id/registerFragment" />
+
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+
     </fragment>
 
+    <!-- Экран регистрации -->
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.activehabit.app.ui.auth.RegisterFragment"
         android:label="Регистрация">
+
         <action
             android:id="@+id/action_register_to_login"
-            app:destination="@id/loginFragment"/>
+            app:destination="@id/loginFragment" />
+
     </fragment>
+
+    <!-- Главный экран -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.activehabit.app.ui.home.HomeFragment"
+        android:label="Главная">
+
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/profileFragment" />
+
+        <action
+            android:id="@+id/action_home_to_habits"
+            app:destination="@id/habitsFragment" />
+
+        <action
+            android:id="@+id/action_home_to_workouts"
+            app:destination="@id/workoutsFragment" />
+        <action
+            android:id="@+id/action_home_to_statistics"
+            app:destination="@id/statisticsFragment" />
+
+    </fragment>
+
+    <!-- Экран профиля -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.activehabit.app.ui.profile.ProfileFragment"
+        android:label="Мой профиль">
+
+        <action
+            android:id="@+id/action_profile_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="false" />
+
+    </fragment>
+
+    <!-- Экран привычек -->
+    <fragment
+        android:id="@+id/habitsFragment"
+        android:name="com.activehabit.app.ui.habits.HabitsFragment"
+        android:label="Мои привычки" />
+
+    <!-- Экран тренировок -->
+    <fragment
+        android:id="@+id/workoutsFragment"
+        android:name="com.activehabit.app.ui.workouts.WorkoutsFragment"
+        android:label="Мои тренировки" />
+
+    <!-- Экран статистики -->
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.activehabit.app.ui.statistics.StatisticsFragment"
+        android:label="Моя статистика" />
 
 </navigation>

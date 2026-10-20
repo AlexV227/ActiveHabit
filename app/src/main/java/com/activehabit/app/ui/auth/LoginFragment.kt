@@ -77,12 +77,29 @@ class LoginFragment : Fragment() {
                     )
 
                     val loginResponse = RetrofitClient.apiService.login(requestLogin)
+                    val sharedPreferences = requireContext().getSharedPreferences(
+                        "ActiveHabitPrefs",
+                        android.content.Context.MODE_PRIVATE
+                    )
 
+                    sharedPreferences.edit()
+                        .putString("auth_token", loginResponse.token)
+                        .apply()
+                    // Получаем профиль авторизованного пользователя
+                    val profileResponse = RetrofitClient.apiService.getProfile(
+                        "Bearer ${loginResponse.token}"
+                    )
+
+// Показываем данные пользователя
                     Toast.makeText(
                         requireContext(),
-                        loginResponse.message,
+                        "Добро пожаловать, ${profileResponse.user.name}!\n" +
+                                "Email: ${profileResponse.user.email}",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    findNavController().navigate(R.id.action_login_to_home)
+
                 } catch (error: Exception) {
                     Toast.makeText(
                         requireContext(),

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#F7F8FC">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Моя статистика"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#5E4BA5"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tvTotalWorkouts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Тренировок: —"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvTotalMinutes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Время тренировок: —"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvTotalHabits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Полезных привычек: —"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:background="#FFFFFF" />
+
+</LinearLayout>

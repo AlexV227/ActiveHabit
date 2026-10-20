@@ -1,3 +1,4 @@
+
 package com.activehabit.app.ui.auth
 import androidx.navigation.fragment.findNavController
 import com.activehabit.app.R
@@ -11,6 +12,12 @@ import android.util.Patterns
 import com.activehabit.app.validators.getEmailValidationError
 import android.widget.Toast
 import com.activehabit.app.validators.getPasswordValidationError
+import androidx.lifecycle.lifecycleScope
+import com.activehabit.app.network.RegisterRequest
+import com.activehabit.app.network.RetrofitClient
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
@@ -60,12 +67,65 @@ class RegisterFragment : Fragment() {
             }
 
  */
+
             val passwordError = getPasswordValidationError(password)
 
             if (passwordError != null) {
                 binding.etPassword.error = passwordError
                 isValid = false
             }
+
+            if (!isValid) {
+                return@setOnClickListener
+            }
+
+
+            binding.btnRegister.isEnabled = false
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    val response = RetrofitClient.apiService.register(
+                        RegisterRequest(
+                            name = name,
+                            email = email,
+                            password = password
+                        )
+                    )
+
+                    Toast.makeText(
+                        requireContext(),
+                        response.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    findNavController().popBackStack()
+
+                } catch (e: HttpException) {
+                    val message = when (e.code()) {
+                        409 -> "Пользователь с таким email уже существует"
+                        400 -> "Проверьте введённые данные"
+                        else -> "Ошибка сервера: ${e.code()}"
+                    }
+
+                    Toast.makeText(
+                        requireContext(),
+                        message,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Не удалось подключиться к серверу",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                } finally {
+                    _binding?.btnRegister?.isEnabled = true
+                }
+            }
+
+
 
             /* if (password.isBlank()) {
                 binding.etPassword.error = "Введите пароль"
