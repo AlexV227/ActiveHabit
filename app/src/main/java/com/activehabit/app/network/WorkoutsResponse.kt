@@ -9,5 +9,6 @@ data class WorkoutItem(
     val workoutType: String,
     val durationMinutes: Int,
     val workoutDate: String,
+    val distanceMeters: Int? = null,
     val createdAt: String
 )

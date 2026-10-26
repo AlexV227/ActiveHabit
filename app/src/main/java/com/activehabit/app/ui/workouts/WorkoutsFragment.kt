@@ -107,7 +107,16 @@ class WorkoutsFragment : Fragment() {
                             "Продолжительность: ${workout.durationMinutes} мин"
                         duration.textSize = 15f
                         card.addView(duration)
+                        if (workout.distanceMeters != null) {
+                            val distance = TextView(requireContext())
 
+                            distance.text =
+                                "Дистанция: ${workout.distanceMeters} м"
+
+                            distance.textSize = 15f
+
+                            card.addView(distance)
+                        }
                         val date = TextView(requireContext())
                         date.text = "Дата: ${workout.workoutDate.take(10)}"
                         date.textSize = 14f
@@ -153,24 +162,57 @@ class WorkoutsFragment : Fragment() {
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
         }
 
+        val distanceInput = android.widget.EditText(context).apply {
+            hint = "Дистанция в метрах"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        }
+
         container.addView(typeInput)
         container.addView(durationInput)
+        container.addView(distanceInput)
 
         androidx.appcompat.app.AlertDialog.Builder(context)
             .setTitle("Новая тренировка")
             .setView(container)
             .setPositiveButton("Добавить") { _, _ ->
                 val workoutType = typeInput.text.toString().trim()
-                val duration = durationInput.text.toString().toIntOrNull()
 
-                if (workoutType.isEmpty() || duration == null || duration <= 0) {
+                val duration =
+                    durationInput.text.toString().toIntOrNull()
+
+                val distance =
+                    distanceInput.text.toString().toIntOrNull()
+
+                val isRunning =
+                    workoutType.equals("бег", ignoreCase = true)
+
+                if (
+                    workoutType.isEmpty() ||
+                    duration == null ||
+                    duration <= 0
+                ) {
                     android.widget.Toast.makeText(
                         context,
                         "Введите вид тренировки и время больше 0",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
+
+                } else if (
+                    isRunning &&
+                    (distance == null || distance <= 0)
+                ) {
+                    android.widget.Toast.makeText(
+                        context,
+                        "Для бега укажите дистанцию в метрах",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+
                 } else {
-                    createWorkout(workoutType, duration)
+                    createWorkout(
+                        workoutType,
+                        duration,
+                        distance
+                    )
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -178,7 +220,8 @@ class WorkoutsFragment : Fragment() {
     }
     private fun createWorkout(
         workoutType: String,
-        durationMinutes: Int
+        durationMinutes: Int,
+        distanceMeters: Int?
     ) {
         val token = getToken()
 
@@ -188,15 +231,18 @@ class WorkoutsFragment : Fragment() {
                 "Необходимо войти в аккаунт",
                 android.widget.Toast.LENGTH_SHORT
             ).show()
+
             return
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val request = com.activehabit.app.network.CreateWorkoutRequest(
-                    workoutType = workoutType,
-                    durationMinutes = durationMinutes
-                )
+                val request =
+                    com.activehabit.app.network.CreateWorkoutRequest(
+                        workoutType = workoutType,
+                        durationMinutes = durationMinutes,
+                        distanceMeters = distanceMeters
+                    )
 
                 RetrofitClient.apiService.createWorkout(
                     "Bearer $token",

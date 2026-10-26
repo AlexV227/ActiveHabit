@@ -43,6 +43,9 @@ class StatisticsFragment : Fragment() {
         val tvTotalMinutes =
             view.findViewById<TextView>(R.id.tvTotalMinutes)
 
+        val tvTotalDistance =
+            view.findViewById<TextView>(R.id.tvTotalDistance)
+
         val tvTotalHabits =
             view.findViewById<TextView>(R.id.tvTotalHabits)
 
@@ -73,18 +76,23 @@ class StatisticsFragment : Fragment() {
                 val totalMinutes = workouts.sumOf {
                     it.durationMinutes
                 }
-
+                val totalDistance = workouts.sumOf {
+                    it.distanceMeters ?: 0
+                }
                 tvTotalWorkouts.text =
                     "Тренировок: $totalWorkouts"
 
                 tvTotalMinutes.text =
                     "Время тренировок: $totalMinutes мин"
-
+                tvTotalDistance.text =
+                    "Дистанция бега: $totalDistance м"
             } catch (error: Exception) {
                 tvTotalWorkouts.text =
                     "Не удалось загрузить тренировки"
                 tvTotalMinutes.text =
                     "Время тренировок: —"
+                tvTotalDistance.text =
+                    "Дистанция бега: —"
             }
 
             try {

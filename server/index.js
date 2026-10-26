@@ -228,7 +228,7 @@ app.post("/api/habits", authenticateToken, async (request, response) => {
     try {
         const { title } = request.body;
 
-        // Проверяем название привычки
+        // Проверка названия
         if (typeof title !== "string" || title.trim().length === 0) {
             return response.status(400).json({
                 message: "Введите название привычки"
@@ -241,7 +241,7 @@ app.post("/api/habits", authenticateToken, async (request, response) => {
             });
         }
 
-        // Сохраняем привычку в PostgreSQL
+        // Сохраняем привычку в Postgres
         const result = await pool.query(
             `INSERT INTO habits (user_id, title)
              VALUES ($1, $2)
@@ -425,7 +425,13 @@ app.delete("/api/habits/:id", authenticateToken, async (request, response) => {
 app.post("/api/workouts", authenticateToken, async (request, response) => {
     try {
         const userId = request.user.userId;
-        const { workoutType, durationMinutes, workoutDate } = request.body;
+
+        const {
+            workoutType,
+            durationMinutes,
+            workoutDate,
+            distanceMeters
+        } = request.body;
 
         if (
             typeof workoutType !== "string" ||
@@ -446,22 +452,68 @@ app.post("/api/workouts", authenticateToken, async (request, response) => {
             });
         }
 
+        const normalizedWorkoutType = workoutType.trim();
+        const isRunning = normalizedWorkoutType.toLowerCase() === "бег";
+
+        if (
+            isRunning &&
+            (!Number.isInteger(distanceMeters) || distanceMeters <= 0)
+        ) {
+            return response.status(400).json({
+                message: "Для бега укажите дистанцию в метрах"
+            });
+        }
+
+        if (
+            distanceMeters !== null &&
+            distanceMeters !== undefined &&
+            (!Number.isInteger(distanceMeters) || distanceMeters <= 0)
+        ) {
+            return response.status(400).json({
+                message: "Дистанция должна быть целым положительным числом"
+            });
+        }
+
         const result = await pool.query(
             `INSERT INTO workouts
-                (user_id, workout_type, duration_minutes, workout_date)
-             VALUES ($1, $2, $3, COALESCE($4::date, CURRENT_DATE))
-             RETURNING id, workout_type, duration_minutes, workout_date`,
+                (
+                    user_id,
+                    workout_type,
+                    duration_minutes,
+                    workout_date,
+                    distance_meters
+                )
+             VALUES (
+                    $1,
+                    $2,
+                    $3,
+                    COALESCE($4::date, CURRENT_DATE),
+                    $5
+                )
+             RETURNING
+                    id,
+                    workout_type,
+                    duration_minutes,
+                    workout_date,
+                    distance_meters`,
             [
                 userId,
-                workoutType.trim(),
+                normalizedWorkoutType,
                 durationMinutes,
-                workoutDate || null
+                workoutDate || null,
+                distanceMeters || null
             ]
         );
 
         return response.status(201).json({
             message: "Тренировка успешно добавлена",
-            workout: result.rows[0]
+            workout: {
+                id: result.rows[0].id,
+                workoutType: result.rows[0].workout_type,
+                durationMinutes: result.rows[0].duration_minutes,
+                workoutDate: result.rows[0].workout_date,
+                distanceMeters: result.rows[0].distance_meters
+            }
         });
 
     } catch (error) {
@@ -481,7 +533,8 @@ app.get("/api/workouts", authenticateToken, async (request, response) => {
                 workout_type,
                 duration_minutes,
                 workout_date,
-                created_at
+                created_at,
+                distance_meters
              FROM workouts
              WHERE user_id = $1
              ORDER BY workout_date DESC, id DESC`,
@@ -494,13 +547,13 @@ app.get("/api/workouts", authenticateToken, async (request, response) => {
                 workoutType: workout.workout_type,
                 durationMinutes: workout.duration_minutes,
                 workoutDate: workout.workout_date,
+                distanceMeters: workout.distance_meters,
                 createdAt: workout.created_at
             }))
         });
 
     } catch (error) {
         console.error("Get workouts error:", error);
-
         return response.status(500).json({
             message: "Внутренняя ошибка сервера"
         });

@@ -35,7 +35,15 @@
         android:padding="16dp"
         android:background="#FFFFFF"
         android:layout_marginBottom="12dp" />
-
+    <TextView
+        android:id="@+id/tvTotalDistance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Дистанция бега: —"
+        android:textSize="20sp"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:layout_marginBottom="12dp" />
     <TextView
         android:id="@+id/tvTotalHabits"
         android:layout_width="match_parent"
