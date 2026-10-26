@@ -1,7 +1,5 @@
 package com.activehabit.app.validators
 
-
-
 fun getPasswordValidationError(password: String): String? {
     return when {
         password.isBlank() ->
