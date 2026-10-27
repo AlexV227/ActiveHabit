@@ -50,6 +50,10 @@ class HomeFragment : Fragment() {
         btnStatistics.setOnClickListener {
             findNavController().navigate(R.id.action_home_to_statistics)
         }
+        val btnHelp = view.findViewById<View>(R.id.btnHelp)
 
+        btnHelp.setOnClickListener {
+            findNavController().navigate(R.id.action_home_to_help)
+        }
     }
 }

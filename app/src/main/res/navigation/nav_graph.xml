@@ -54,7 +54,9 @@
         <action
             android:id="@+id/action_home_to_statistics"
             app:destination="@id/statisticsFragment" />
-
+        <action
+            android:id="@+id/action_home_to_help"
+            app:destination="@id/helpFragment" />
     </fragment>
 
     <!-- Экран профиля -->
@@ -88,5 +90,8 @@
         android:id="@+id/statisticsFragment"
         android:name="com.activehabit.app.ui.statistics.StatisticsFragment"
         android:label="Моя статистика" />
-
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.activehabit.app.ui.help.HelpFragment"
+        android:label="Помощь" />
 </navigation>

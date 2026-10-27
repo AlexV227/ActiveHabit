@@ -56,8 +56,13 @@
 
     <Button
         android:id="@+id/btnProfile"
+        android:layout_marginBottom="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Мой профиль" />
-
+    <Button
+        android:id="@+id/btnHelp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Помощь" />
 </LinearLayout>
