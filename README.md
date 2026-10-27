@@ -94,3 +94,10 @@ psql -U activehabit_user -d activehabit -h localhost -f schema.sql
 node index.js
 
 После запуска сервер работает по адресу .
+
+Диаграммы проекта
+
+- [Архитектура приложения](docs/diagrams/architecture.md)
+- [ER-диаграмма базы данных](docs/diagrams/database.md)
+- [UML-диаграмма классов](docs/diagrams/android-classes.md)
+- [Объектная диаграмма](docs/diagrams/objects.md)
