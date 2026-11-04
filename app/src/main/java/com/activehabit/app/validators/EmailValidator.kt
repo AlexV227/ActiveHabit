@@ -1,14 +1,15 @@
 package com.activehabit.app.validators
 
-
-import android.util.Patterns
-
 fun getEmailValidationError(email: String): String? {
+    val emailPattern = Regex(
+        "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+    )
+
     return when {
         email.isBlank() ->
             "Введите email"
 
-        !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
+        !emailPattern.matches(email) ->
             "Введите корректный email"
 
         else -> null
